@@ -1,0 +1,414 @@
+/* ============================================================ */
+/* RESET Y FUENTES                                              */
+/* ============================================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cinzel:wght@700&display=swap');
+
+body {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    background: #0d1f0d;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    overflow-x: hidden;
+}
+
+/* ============================================================ */
+/* PANTALLA 1: INICIO                                           */
+/* ============================================================ */
+#pantalla-inicio {
+    position: relative;
+    max-width: 450px;
+    width: 100%;
+    min-height: 650px;
+    background: linear-gradient(160deg, #1a3a1a, #0d1f0d);
+    border-radius: 40px;
+    padding: 30px 20px;
+    text-align: center;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.9);
+    border: 2px solid #4a7a3a;
+    animation: aparecer 1s ease-out;
+}
+
+@keyframes aparecer {
+    0% { opacity: 0; transform: scale(0.9) rotate(-2deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+/* === Fondo de Mérida === */
+.fondo-merida {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Arcos decorativos */
+.arco {
+    position: absolute;
+    border: 3px solid rgba(74, 122, 58, 0.3);
+    border-radius: 50%;
+    border-bottom: none;
+    width: 120px;
+    height: 60px;
+}
+.arco-1 { top: -10px; left: -30px; transform: rotate(-20deg); }
+.arco-2 { top: -10px; right: -30px; transform: rotate(20deg); }
+.arco-3 { bottom: 80px; left: -20px; transform: rotate(160deg); width: 80px; height: 40px; }
+.arco-4 { bottom: 80px; right: -20px; transform: rotate(-160deg); width: 80px; height: 40px; }
+
+/* Flechas decorativas */
+.flecha {
+    position: absolute;
+    font-size: 1.8rem;
+    opacity: 0.15;
+    transform: rotate(-30deg);
+}
+.flecha-izq { top: 20%; left: 5%; transform: rotate(-30deg); }
+.flecha-der { top: 70%; right: 5%; transform: rotate(150deg); }
+
+/* Patrón escocés (tartán) */
+.tartan {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: repeating-linear-gradient(
+        90deg,
+        #2d5a2d 0px, #2d5a2d 8px,
+        #4a7a3a 8px, #4a7a3a 12px,
+        #1a3a1a 12px, #1a3a1a 16px,
+        #8B0000 16px, #8B0000 20px,
+        #1a3a1a 20px, #1a3a1a 24px
+    );
+    opacity: 0.4;
+}
+
+/* === Contenido de inicio === */
+.contenido-inicio {
+    position: relative;
+    z-index: 1;
+}
+
+.icono-corazon {
+    font-size: 3rem;
+    animation: latir 1.5s ease-in-out infinite;
+}
+
+@keyframes latir {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+.mensaje-inicial {
+    font-size: 1.8rem;
+    color: #f0e6d0;
+    margin: 15px 0 25px;
+    font-family: 'Cinzel', serif;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    letter-spacing: 1px;
+}
+
+/* Sobre con flecha */
+.sobre-flecha {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0 30px;
+}
+
+.sobre {
+    width: 90px;
+    height: 65px;
+    background: linear-gradient(145deg, #4a7a3a, #2d5a2d);
+    border-radius: 8px 8px 0 0;
+    position: relative;
+    box-shadow: 0 6px 0 #1a3a1a;
+    transition: transform 0.5s ease;
+    cursor: pointer;
+}
+
+.sobre:hover {
+    transform: scale(1.05);
+}
+
+.solapa {
+    position: absolute;
+    top: -18px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 45px solid transparent;
+    border-right: 45px solid transparent;
+    border-bottom: 30px solid #4a7a3a;
+}
+
+.cuerpo-sobre {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 2rem;
+}
+
+.flecha-sobre {
+    font-size: 2.2rem;
+    color: #c9a84a;
+    animation: moverFlecha 1.5s ease-in-out infinite;
+}
+
+@keyframes moverFlecha {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(10px); }
+}
+
+/* Botón Ábreme */
+.btn-abrir {
+    background: linear-gradient(135deg, #c9a84a, #8B6914);
+    border: 2px solid #f0d080;
+    padding: 18px 45px;
+    border-radius: 50px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #0d1f0d;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(201, 168, 74, 0.4);
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Cinzel', serif;
+}
+
+.btn-abrir:hover {
+    transform: scale(1.06);
+    box-shadow: 0 12px 40px rgba(201, 168, 74, 0.6);
+}
+
+.texto-boton {
+    letter-spacing: 2px;
+}
+
+.pequeno {
+    margin-top: 20px;
+    font-size: 0.8rem;
+    color: rgba(240, 230, 208, 0.5);
+}
+
+/* ============================================================ */
+/* PANTALLA 2: INVITACIÓN COMPLETA                             */
+/* ============================================================ */
+#invitacion-completa {
+    max-width: 450px;
+    width: 100%;
+    background: linear-gradient(160deg, #1a3a1a, #0d1f0d);
+    border-radius: 40px;
+    padding: 25px 20px 20px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.9);
+    border: 2px solid #4a7a3a;
+    animation: aparecer 0.8s ease-out;
+    position: relative;
+}
+
+/* Control de música */
+.control-musica {
+    position: absolute;
+    top: 15px;
+    right: 18px;
+    z-index: 10;
+}
+
+#btn-musica {
+    background: rgba(74, 122, 58, 0.3);
+    border: 2px solid rgba(201, 168, 74, 0.3);
+    color: #f0e6d0;
+    font-size: 1.4rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+    backdrop-filter: blur(8px);
+}
+
+#btn-musica:hover {
+    background: rgba(74, 122, 58, 0.5);
+    transform: scale(1.1);
+}
+
+/* Logo Mérida */
+.logo-merida {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #c9a84a;
+    margin-bottom: 15px;
+    letter-spacing: 15px;
+}
+
+.tartan-texto {
+    color: #8B0000;
+    font-size: 2rem;
+}
+
+/* Imagen de la invitación */
+.imagen-invitacion {
+    background: rgba(0,0,0,0.3);
+    border-radius: 20px;
+    padding: 8px;
+    border: 2px solid rgba(201, 168, 74, 0.2);
+    margin-bottom: 20px;
+}
+
+.imagen-invitacion img {
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+    display: block;
+}
+
+/* Botón Ubícame */
+.btn-ubicame {
+    display: block;
+    background: linear-gradient(135deg, #c9a84a, #8B6914);
+    color: #0d1f0d;
+    text-align: center;
+    padding: 16px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    font-family: 'Cinzel', serif;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+    border: 1px solid #f0d080;
+    letter-spacing: 1px;
+}
+
+.btn-ubicame:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 30px rgba(201, 168, 74, 0.4);
+}
+
+/* Contador regresivo */
+.cuenta-regresiva {
+    background: rgba(0,0,0,0.3);
+    border-radius: 20px;
+    padding: 20px 15px;
+    text-align: center;
+    border: 1px solid rgba(201, 168, 74, 0.15);
+    margin-bottom: 15px;
+}
+
+.cuenta-regresiva h3 {
+    color: #f0e6d0;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
+}
+
+.contador {
+    display: flex;
+    justify-content: space-around;
+}
+
+.contador-item {
+    text-align: center;
+}
+
+.contador-item span {
+    display: block;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #c9a84a;
+    font-family: 'Cinzel', serif;
+}
+
+.contador-item label {
+    font-size: 0.7rem;
+    color: rgba(240, 230, 208, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Frase de Mérida */
+.frase-merida {
+    text-align: center;
+    padding: 10px 0;
+}
+
+.frase-merida p {
+    color: #f0e6d0;
+    font-size: 1.1rem;
+    font-style: italic;
+}
+
+.frase-merida .cita {
+    font-size: 0.8rem;
+    color: rgba(201, 168, 74, 0.6);
+    margin-top: 3px;
+}
+
+/* Pie */
+.pie-merida {
+    text-align: center;
+    padding-top: 12px;
+    margin-top: 10px;
+    border-top: 1px solid rgba(201, 168, 74, 0.1);
+}
+
+.pie-merida p {
+    color: #c9a84a;
+    font-size: 1.2rem;
+    font-family: 'Cinzel', serif;
+}
+
+/* ============================================================ */
+/* RESPONSIVE                                                   */
+/* ============================================================ */
+@media (max-width: 480px) {
+    #pantalla-inicio, #invitacion-completa {
+        padding: 20px 15px;
+        border-radius: 30px;
+    }
+
+    .mensaje-inicial {
+        font-size: 1.4rem;
+    }
+
+    .btn-abrir {
+        padding: 15px 30px;
+        font-size: 1.1rem;
+    }
+
+    .contador-item span {
+        font-size: 1.8rem;
+    }
+
+    .sobre {
+        width: 70px;
+        height: 52px;
+    }
+    .solapa {
+        border-left-width: 35px;
+        border-right-width: 35px;
+        border-bottom-width: 22px;
+        top: -14px;
+    }
+    .cuerpo-sobre {
+        font-size: 1.5rem;
+    }
+}

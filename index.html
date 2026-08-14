@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XV Amayrani - Valiente</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <!-- ========================================================== -->
+    <!-- PANTALLA 1: MENSAJE INICIAL                                -->
+    <!-- ========================================================== -->
+    <div id="pantalla-inicio">
+        <div class="fondo-merida">
+            <!-- Decoraciones de Mérida -->
+            <div class="arco arco-1"></div>
+            <div class="arco arco-2"></div>
+            <div class="arco arco-3"></div>
+            <div class="arco arco-4"></div>
+            
+            <!-- Flechas decorativas -->
+            <div class="flecha flecha-izq">🏹</div>
+            <div class="flecha flecha-der">🏹</div>
+            
+            <!-- Patrón escocés (tartán) -->
+            <div class="tartan"></div>
+        </div>
+
+        <div class="contenido-inicio">
+            <div class="icono-corazon">💖</div>
+            <p class="mensaje-inicial">Amayrani te mando un mensaje</p>
+            
+            <!-- Sobre con flecha -->
+            <div class="sobre-flecha" id="sobreAnimado">
+                <div class="sobre">
+                    <div class="solapa"></div>
+                    <div class="cuerpo-sobre">
+                        <span>📩</span>
+                    </div>
+                </div>
+                <div class="flecha-sobre">🏹</div>
+            </div>
+
+            <button id="btn-abrir" class="btn-abrir">
+                <span class="texto-boton">Ábreme</span>
+                <span class="icono-boton">✨</span>
+            </button>
+            
+            <p class="pequeno">🎵 Toca para comenzar la música</p>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- PANTALLA 2: INVITACIÓN COMPLETA                           -->
+    <!-- ========================================================== -->
+    <div id="invitacion-completa" style="display:none;">
+        
+        <!-- Control de música -->
+        <div class="control-musica">
+            <button id="btn-musica">🔊</button>
+        </div>
+
+        <!-- Logo de Mérida / Valiente -->
+        <div class="logo-merida">
+            <span>🏹</span>
+            <span class="tartan-texto">◆</span>
+            <span>🏹</span>
+        </div>
+
+        <!-- IMAGEN DE LA INVITACIÓN -->
+        <div class="imagen-invitacion">
+            <img src="invitacion.png" alt="Invitación XV Amayrani" />
+            <!-- 
+                ⚠️ IMPORTANTE: 
+                Coloca tu imagen con el nombre "invitacion.jpg" 
+                en la misma carpeta que este archivo.
+                Si la imagen tiene otro nombre o extensión, 
+                cambia el src.
+            -->
+        </div>
+
+        <!-- BOTÓN UBÍCAME -->
+        <a href="https://www.google.com/maps?q=Av.+Benito+Ju%C3%A1rez+190,+Francisco+Villa,+Iztapalapa,+09720+Ciudad+de+M%C3%A9xico,+CDMX" 
+           target="_blank" 
+           class="btn-ubicame">
+            📍 ¡Ubícame!
+        </a>
+
+        <!-- CONTADOR REGRESIVO -->
+        <div class="cuenta-regresiva">
+            <h3>⏳ ¡Faltan para la fiesta!</h3>
+            <div class="contador">
+                <div class="contador-item">
+                    <span id="dias">00</span>
+                    <label>Días</label>
+                </div>
+                <div class="contador-item">
+                    <span id="horas">00</span>
+                    <label>Horas</label>
+                </div>
+                <div class="contador-item">
+                    <span id="minutos">00</span>
+                    <label>Minutos</label>
+                </div>
+                <div class="contador-item">
+                    <span id="segundos">00</span>
+                    <label>Segundos</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Texto extra con temática -->
+        <div class="frase-merida">
+            <p>✨ "Con toda libertad" ✨</p>
+            <p class="cita">— Valiente —</p>
+        </div>
+
+        <!-- Pie de página -->
+        <div class="pie-merida">
+            <p>💖 Amayrani 💖</p>
+        </div>
+
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- AUDIO: Canción "Con toda libertad"                         -->
+    <!-- ========================================================== -->
+    <audio id="musica" loop preload="auto">
+        <source src="musica/con-toda-libertad.mp3" type="audio/mpeg" />
+        <source src="musica/con-toda-libertad.ogg" type="audio/ogg" />
+        Tu navegador no soporta audio.
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
