@@ -5,6 +5,426 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>XV Amayrani - Valiente</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+        /* ===== TODOS LOS ESTILOS ===== */
+        .admin-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 9999;
+            overflow-y: auto;
+            padding: 30px 20px;
+            box-sizing: border-box;
+        }
+        .admin-panel.mostrar { display: block; animation: fadeInAdmin 0.4s ease; }
+        @keyframes fadeInAdmin {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .admin-contenido {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .admin-contenido .cerrar-admin {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #c0392b;
+            transition: transform 0.3s;
+        }
+        .admin-contenido .cerrar-admin:hover { transform: rotate(90deg); }
+        .admin-titulo {
+            color: #8b1a1a;
+            font-family: 'Georgia', serif;
+            font-size: 2rem;
+            text-align: center;
+            border-bottom: 3px solid #c0392b;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .admin-titulo small {
+            font-size: 0.8rem;
+            color: #888;
+            display: block;
+            font-family: Arial, sans-serif;
+        }
+        .admin-estadisticas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .admin-estadisticas .stat {
+            background: #f8f4f0;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid #c0392b;
+        }
+        .admin-estadisticas .stat .numero {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #8b1a1a;
+        }
+        .admin-estadisticas .stat .label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .admin-tabla {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+        .admin-tabla th {
+            background: #8b1a1a;
+            color: white;
+            padding: 12px 10px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+        }
+        .admin-tabla td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        .admin-tabla tr:hover { background: #fdf2e9; }
+        .admin-tabla .estado-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .estado-badge.asiste { background: #27ae60; color: white; }
+        .estado-badge.no-asiste { background: #e74c3c; color: white; }
+        .admin-acciones {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        .admin-acciones button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        .admin-acciones .btn-excel { background: #27ae60; color: white; }
+        .admin-acciones .btn-excel:hover { background: #1e8449; transform: scale(1.03); }
+        .admin-acciones .btn-limpiar { background: #e74c3c; color: white; }
+        .admin-acciones .btn-limpiar:hover { background: #c0392b; transform: scale(1.03); }
+        .admin-acciones .btn-cerrar { background: #34495e; color: white; }
+        .admin-acciones .btn-cerrar:hover { background: #2c3e50; transform: scale(1.03); }
+        .btn-admin-oculto {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 0.8rem;
+            color: rgba(0,0,0,0.08);
+            cursor: pointer;
+            padding: 5px 10px;
+            z-index: 100;
+            transition: color 0.3s;
+        }
+        .btn-admin-oculto:hover { color: rgba(0,0,0,0.3); }
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+        .password-modal.mostrar { display: flex; }
+        .password-modal .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .password-modal .modal-content h2 { color: #8b1a1a; margin-bottom: 10px; }
+        .password-modal .modal-content p { color: #666; margin-bottom: 20px; }
+        .password-modal .modal-content input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e8d5c4;
+            border-radius: 12px;
+            font-size: 1rem;
+            text-align: center;
+            letter-spacing: 5px;
+            margin-bottom: 15px;
+        }
+        .password-modal .modal-content input:focus {
+            border-color: #c0392b;
+            outline: none;
+        }
+        .password-modal .modal-content .btn-password {
+            width: 100%;
+            padding: 15px;
+            background: #8b1a1a;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .password-modal .modal-content .btn-password:hover { background: #c0392b; }
+        .password-modal .modal-content .error-msg {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+        @media (max-width: 600px) {
+            .admin-contenido { padding: 15px; }
+            .admin-tabla { font-size: 0.75rem; }
+            .admin-tabla th, .admin-tabla td { padding: 6px 4px; }
+            .admin-estadisticas { grid-template-columns: repeat(2, 1fr); }
+        }
+        .admin-tabla-wrapper {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        /* ===== SECCIÓN CONFIRMACIÓN ===== */
+        .seccion-confirmacion {
+            background: rgba(255, 248, 245, 0.95);
+            border-radius: 20px;
+            padding: 30px 25px;
+            margin: 30px 20px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            border: 2px solid #c0392b;
+            position: relative;
+            overflow: hidden;
+        }
+        .seccion-confirmacion::before {
+            content: "🏹";
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 60px;
+            opacity: 0.1;
+            transform: rotate(30deg);
+        }
+        .seccion-confirmacion h2 {
+            color: #8b1a1a;
+            font-family: 'Georgia', serif;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .seccion-confirmacion .subtitulo {
+            text-align: center;
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        .campo { margin-bottom: 18px; }
+        .campo label {
+            display: block;
+            font-weight: bold;
+            color: #5d2e2e;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+        .campo input, .campo select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e8d5c4;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: white;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        .campo input:focus, .campo select:focus {
+            border-color: #c0392b;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.2);
+        }
+        .opciones-asistencia {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        .opcion-asistencia {
+            flex: 1;
+            text-align: center;
+            padding: 15px 10px;
+            border: 2px solid #e8d5c4;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .opcion-asistencia:hover {
+            transform: scale(1.03);
+            border-color: #c0392b;
+        }
+        .opcion-asistencia.seleccionada-si {
+            border-color: #27ae60;
+            background: #eafaf1;
+            color: #1a7a3a;
+        }
+        .opcion-asistencia.seleccionada-no {
+            border-color: #e74c3c;
+            background: #fdedec;
+            color: #922b21;
+        }
+        .opcion-asistencia input { display: none; }
+        .campo-personas {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .campo-personas.mostrar { display: block; }
+        .btn-confirmar {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #8b1a1a, #c0392b);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            font-family: 'Georgia', serif;
+            letter-spacing: 1px;
+        }
+        .btn-confirmar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(192, 57, 43, 0.4);
+        }
+        .btn-confirmar:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .mensaje-confirmacion {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: #eafaf1;
+            border-radius: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #27ae60;
+        }
+        .mensaje-confirmacion.mostrar {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        .mensaje-confirmacion .emoji-grande {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .mensaje-confirmacion h3 { color: #1a7a3a; margin-bottom: 5px; }
+        .mensaje-confirmacion p { color: #555; font-size: 0.95rem; }
+        .contador-asistentes { display: none !important; }
+        .mensaje-bonito {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fdf2e9;
+            border-radius: 12px;
+            border: 1px dashed #c0392b;
+            text-align: center;
+            font-style: italic;
+            color: #5d2e2e;
+        }
+        .mensaje-bonito textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e8d5c4;
+            border-radius: 8px;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 0.95rem;
+            margin-top: 8px;
+            box-sizing: border-box;
+        }
+        .mensaje-bonito textarea:focus {
+            border-color: #c0392b;
+            outline: none;
+        }
+        .cupo-lleno-aviso {
+            display: none;
+            background: #fdedec;
+            border: 2px solid #e74c3c;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-top: 15px;
+            color: #922b21;
+            font-weight: bold;
+        }
+        .cupo-lleno-aviso.mostrar { display: block; }
+        .cargando {
+            display: none;
+            text-align: center;
+            padding: 15px;
+            color: #8b1a1a;
+            font-weight: bold;
+        }
+        .cargando.mostrar { display: block; }
+        @media (max-width: 480px) {
+            .seccion-confirmacion { padding: 20px 15px; margin: 20px 10px; }
+            .opciones-asistencia { flex-direction: row; gap: 10px; }
+            .opcion-asistencia { padding: 12px 5px; font-size: 0.95rem; }
+        }
+
+        .error-conexion {
+            display: none;
+            background: #fdedec;
+            border: 2px solid #e74c3c;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            color: #922b21;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        .error-conexion.mostrar { display: block; }
+    </style>
 </head>
 <body>
 
@@ -13,17 +433,12 @@
     <!-- ========================================================== -->
     <div id="pantalla-inicio">
         <div class="fondo-merida">
-            <!-- Decoraciones de Mérida -->
             <div class="arco arco-1"></div>
             <div class="arco arco-2"></div>
             <div class="arco arco-3"></div>
             <div class="arco arco-4"></div>
-            
-            <!-- Flechas decorativas -->
             <div class="flecha flecha-izq">🏹</div>
             <div class="flecha flecha-der">🏹</div>
-            
-            <!-- Patrón escocés (tartán) -->
             <div class="tartan"></div>
         </div>
 
@@ -31,7 +446,6 @@
             <div class="icono-corazon">💖</div>
             <p class="mensaje-inicial">Amayrani te mando un mensaje</p>
             
-            <!-- Sobre con flecha -->
             <div class="sobre-flecha" id="sobreAnimado">
                 <div class="sobre">
                     <div class="solapa"></div>
@@ -56,38 +470,100 @@
     <!-- ========================================================== -->
     <div id="invitacion-completa" style="display:none;">
         
-        <!-- Control de música -->
         <div class="control-musica">
             <button id="btn-musica">🔊</button>
         </div>
 
-        <!-- Logo de Mérida / Valiente -->
         <div class="logo-merida">
             <span>🏹</span>
             <span class="tartan-texto">◆</span>
             <span>🏹</span>
         </div>
 
-        <!-- IMAGEN DE LA INVITACIÓN -->
         <div class="imagen-invitacion">
             <img src="invitacion.png" alt="Invitación XV Amayrani" />
-            <!-- 
-                ⚠️ IMPORTANTE: 
-                Coloca tu imagen con el nombre "invitacion.jpg" 
-                en la misma carpeta que este archivo.
-                Si la imagen tiene otro nombre o extensión, 
-                cambia el src.
-            -->
         </div>
 
-        <!-- BOTÓN UBÍCAME -->
         <a href="https://www.google.com/maps?q=Av.+Benito+Ju%C3%A1rez+190,+Francisco+Villa,+Iztapalapa,+09720+Ciudad+de+M%C3%A9xico,+CDMX" 
            target="_blank" 
            class="btn-ubicame">
             📍 ¡Salón Majestic!
         </a>
 
-        <!-- CONTADOR REGRESIVO -->
+        <!-- ========================================================== -->
+        <!-- SECCIÓN DE CONFIRMACIÓN DE ASISTENCIA                     -->
+        <!-- ========================================================== -->
+        <div class="seccion-confirmacion" id="seccionConfirmacion">
+            <h2>📋 Confirma tu asistencia</h2>
+            <p class="subtitulo">"Tu presencia es el mejor regalo" 🏹</p>
+
+            <div class="cargando" id="cargandoDatos">⏳ Cargando datos...</div>
+
+            <div id="contenidoConfirmacion">
+                <!-- Opciones de asistencia -->
+                <div class="opciones-asistencia">
+                    <label class="opcion-asistencia" id="opcionSi">
+                        <input type="radio" name="asistencia" value="si" />
+                        ✅ Sí asistiré
+                    </label>
+                    <label class="opcion-asistencia" id="opcionNo">
+                        <input type="radio" name="asistencia" value="no" />
+                        ❌ No asistiré
+                    </label>
+                </div>
+
+                <!-- Campo para nombre -->
+                <div class="campo">
+                    <label for="nombreInvitado">👤 Tu nombre</label>
+                    <input type="text" id="nombreInvitado" placeholder="Escribe tu nombre completo" />
+                </div>
+
+                <!-- Campo para número de personas -->
+                <div class="campo-personas" id="campoPersonas">
+                    <label for="numPersonas">👥 ¿Cuántas personas vienen contigo?</label>
+                    <select id="numPersonas">
+                        <option value="1">1 (Solo yo)</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                    <p style="font-size:0.8rem; color:#888; margin-top:5px;">📌 Incluyéndote a ti</p>
+                </div>
+
+                <!-- Mensaje bonito -->
+                <div class="mensaje-bonito">
+                    <label for="mensajePersonal">💌 Deja un mensaje bonito para Amayrani</label>
+                    <textarea id="mensajePersonal" rows="2" placeholder="Escribe un mensaje especial..."></textarea>
+                </div>
+
+                <!-- Aviso de cupo lleno -->
+                <div class="cupo-lleno-aviso" id="cupoLlenoAviso">
+                    ⚠️ Lo sentimos, el cupo máximo de 200 personas ya fue alcanzado. ¡Gracias por tu interés!
+                </div>
+
+                <!-- Error de conexión -->
+                <div class="error-conexion" id="errorConexion">
+                    ❌ No se pudo conectar con el servidor. Verifica tu conexión a internet.
+                </div>
+
+                <!-- Botón confirmar -->
+                <button class="btn-confirmar" id="btnConfirmar">🏹 Confirmar asistencia</button>
+
+                <!-- Mensaje de confirmación -->
+                <div class="mensaje-confirmacion" id="mensajeConfirmacion">
+                    <span class="emoji-grande">🎉</span>
+                    <h3>¡Gracias por confirmar!</h3>
+                    <p id="textoConfirmacion">Te esperamos con mucha alegría 💖</p>
+                </div>
+            </div>
+        </div>
+
         <div class="cuenta-regresiva">
             <h3>⏳ ¡Faltan para la fiesta!</h3>
             <div class="contador">
@@ -110,19 +586,16 @@
             </div>
         </div>
 
-        <!-- Texto extra con temática -->
         <div class="frase-merida">
             <p>✨ "Con toda libertad" ✨</p>
             <p class="cita">— Valiente —</p>
         </div>
-
-		<!-- FRASE DEL REGALO -->
-        <div class="frase-merida">
+		
+		<div class="frase-merida">
             <p> Nota: </p>
-            <p> “El regalo es opcional… el sobre es tradición” 💰😌</p>
+            <p> "El regalo es opcional… el sobre es tradición" 💰😌</p>
         </div>
-        
-        <!-- Pie de página -->
+
         <div class="pie-merida">
             <p>💖 Amayrani 💖</p>
         </div>
@@ -130,7 +603,105 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- AUDIO: Canción "Con toda libertad"                         -->
+    <!-- BOTÓN OCULTO PARA ACCEDER AL ADMIN                         -->
+    <!-- ========================================================== -->
+    <button class="btn-admin-oculto" id="btnAdminOculto" title="Panel de administración">🔑</button>
+
+    <!-- ========================================================== -->
+    <!-- MODAL DE CONTRASEÑA                                        -->
+    <!-- ========================================================== -->
+    <div class="password-modal" id="passwordModal">
+        <div class="modal-content">
+            <h2>🔐 Panel de Administración</h2>
+            <p>Ingresa la contraseña para ver la lista de invitados</p>
+            <input type="password" id="inputPassword" placeholder="••••••••" maxlength="20" />
+            <button class="btn-password" id="btnAccederAdmin">Acceder</button>
+            <div class="error-msg" id="errorPassword">❌ Contraseña incorrecta</div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- PANEL DE ADMINISTRACIÓN                                    -->
+    <!-- ========================================================== -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-contenido">
+            <button class="cerrar-admin" id="cerrarAdmin">✕</button>
+            
+            <h1 class="admin-titulo">
+                🏹 Panel de Control - XV Amayrani
+                <small>Datos de confirmación de invitados</small>
+            </h1>
+
+            <div class="cargando" id="cargandoAdmin">⏳ Cargando datos...</div>
+
+            <div id="contenidoAdmin">
+                <!-- Estadísticas -->
+                <div class="admin-estadisticas" id="adminEstadisticas">
+                    <div class="stat">
+                        <div class="numero" id="adminTotal">0</div>
+                        <div class="label">📋 Total invitados</div>
+                    </div>
+                    <div class="stat">
+                        <div class="numero" id="adminAsisten">0</div>
+                        <div class="label">✅ Confirman asistencia</div>
+                    </div>
+                    <div class="stat">
+                        <div class="numero" id="adminNoAsisten">0</div>
+                        <div class="label">❌ No asisten</div>
+                    </div>
+                    <div class="stat">
+                        <div class="numero" id="adminPersonas">0</div>
+                        <div class="label">👥 Total de personas</div>
+                    </div>
+                    <div class="stat">
+                        <div class="numero" id="adminDisponibles">200</div>
+                        <div class="label">🎫 Boletos disponibles</div>
+                    </div>
+                </div>
+
+                <!-- Tabla de invitados -->
+                <h3 style="color:#8b1a1a; margin:15px 0 10px;">📋 Lista completa de invitados</h3>
+                <div class="admin-tabla-wrapper">
+                    <table class="admin-tabla" id="adminTabla">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Asiste</th>
+                                <th>Personas</th>
+                                <th>Mensaje</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTablaBody">
+                            <tr>
+                                <td colspan="6" style="text-align:center; color:#888; padding:30px;">
+                                    No hay invitados confirmados aún
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Acciones -->
+                <div class="admin-acciones">
+                    <button class="btn-excel" id="btnExportarExcel">📊 Exportar a Excel (CSV)</button>
+                    <button class="btn-limpiar" id="btnLimpiarDatos">🗑️ Limpiar todos los datos</button>
+                    <button class="btn-cerrar" id="btnCerrarAdmin">🔒 Cerrar panel</button>
+                </div>
+
+                <p style="text-align:center; color:#999; font-size:0.8rem; margin-top:20px;">
+                    🔒 Solo visible para la quinceañera y organizadores
+                </p>
+                <p style="text-align:center; color:#999; font-size:0.7rem;">
+                    📍 Los datos se guardan en Google Sheets
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- AUDIO                                                     -->
     <!-- ========================================================== -->
     <audio id="musica" loop preload="auto">
         <source src="musica/con-toda-libertad.mp3" type="audio/mpeg" />
@@ -138,6 +709,441 @@
         Tu navegador no soporta audio.
     </audio>
 
-    <script src="script.js"></script>
+    <script>
+        // ==========================================================
+        // ✅ CONFIGURACIÓN - ¡USA LA URL DE APPS SCRIPT!
+        // ==========================================================
+        
+        // 🔴 ¡IMPORTANTE! Reemplaza con tu URL de Apps Script
+        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyZHB-2j1BzLG7CvligKZtQRpeIhcffBWFz8YBcLUsrFz9F2vUNnSKots_EWnYg3maKrg/exec';
+        
+        const CONTRASENA_ADMIN = 'amayrani2026';
+        const CUPO_MAXIMO = 200;
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // -------- ELEMENTOS --------
+            const pantallaInicio = document.getElementById('pantalla-inicio');
+            const invitacionCompleta = document.getElementById('invitacion-completa');
+            const btnAbrir = document.getElementById('btn-abrir');
+
+            const audio = document.getElementById('musica');
+            const btnMusica = document.getElementById('btn-musica');
+            let musicaActiva = false;
+
+            const opcionSi = document.getElementById('opcionSi');
+            const opcionNo = document.getElementById('opcionNo');
+            const nombreInvitado = document.getElementById('nombreInvitado');
+            const campoPersonas = document.getElementById('campoPersonas');
+            const numPersonas = document.getElementById('numPersonas');
+            const mensajePersonal = document.getElementById('mensajePersonal');
+            const btnConfirmar = document.getElementById('btnConfirmar');
+            const mensajeConfirmacion = document.getElementById('mensajeConfirmacion');
+            const textoConfirmacion = document.getElementById('textoConfirmacion');
+            const cupoLlenoAviso = document.getElementById('cupoLlenoAviso');
+            const errorConexion = document.getElementById('errorConexion');
+            const cargandoDatos = document.getElementById('cargandoDatos');
+            const contenidoConfirmacion = document.getElementById('contenidoConfirmacion');
+
+            const btnAdminOculto = document.getElementById('btnAdminOculto');
+            const passwordModal = document.getElementById('passwordModal');
+            const inputPassword = document.getElementById('inputPassword');
+            const btnAccederAdmin = document.getElementById('btnAccederAdmin');
+            const errorPassword = document.getElementById('errorPassword');
+            const adminPanel = document.getElementById('adminPanel');
+            const cerrarAdmin = document.getElementById('cerrarAdmin');
+            const btnCerrarAdmin = document.getElementById('btnCerrarAdmin');
+            const adminTablaBody = document.getElementById('adminTablaBody');
+            const btnExportarExcel = document.getElementById('btnExportarExcel');
+            const btnLimpiarDatos = document.getElementById('btnLimpiarDatos');
+            const cargandoAdmin = document.getElementById('cargandoAdmin');
+            const contenidoAdmin = document.getElementById('contenidoAdmin');
+
+            let asistentes = [];
+            let asiste = null;
+
+            // -------- FUNCIONES PARA APPS SCRIPT --------
+
+            // Leer datos desde Apps Script
+            async function leerDatos() {
+                try {
+                    errorConexion.classList.remove('mostrar');
+                    cargandoDatos.classList.add('mostrar');
+                    contenidoConfirmacion.style.display = 'none';
+                    
+                    const response = await fetch(URL_SCRIPT);
+                    
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (!result.success) {
+                        throw new Error(result.error || 'Error al leer datos');
+                    }
+                    
+                    asistentes = result.data || [];
+                    verificarCupoLleno();
+                    actualizarAdmin();
+                    
+                } catch (error) {
+                    console.error('Error al leer datos:', error);
+                    errorConexion.textContent = `❌ Error al cargar datos: ${error.message}`;
+                    errorConexion.classList.add('mostrar');
+                } finally {
+                    cargandoDatos.classList.remove('mostrar');
+                    contenidoConfirmacion.style.display = 'block';
+                }
+            }
+
+            // Escribir datos en Apps Script
+            async function escribirDatos(nombre, asiste, personas, mensaje) {
+                try {
+                    errorConexion.classList.remove('mostrar');
+                    
+                    const data = {
+                        nombre: nombre,
+                        asiste: asiste,
+                        personas: personas,
+                        mensaje: mensaje
+                    };
+                    
+                    const response = await fetch(URL_SCRIPT, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (!result.success) {
+                        throw new Error(result.error || 'Error al guardar datos');
+                    }
+                    
+                    return true;
+                    
+                } catch (error) {
+                    console.error('Error al escribir datos:', error);
+                    errorConexion.textContent = `❌ Error al guardar: ${error.message}`;
+                    errorConexion.classList.add('mostrar');
+                    return false;
+                }
+            }
+
+            // -------- FUNCIONES DEL SISTEMA --------
+
+            function verificarCupoLleno() {
+                let total = 0;
+                asistentes.forEach(a => {
+                    if (a.asiste) total += a.personas;
+                });
+                
+                if (total >= CUPO_MAXIMO) {
+                    cupoLlenoAviso.classList.add('mostrar');
+                    btnConfirmar.disabled = true;
+                    btnConfirmar.textContent = '🚫 Cupo lleno';
+                } else {
+                    cupoLlenoAviso.classList.remove('mostrar');
+                    btnConfirmar.disabled = false;
+                    btnConfirmar.textContent = '🏹 Confirmar asistencia';
+                }
+            }
+
+            function actualizarAdmin() {
+                const total = asistentes.length;
+                const asisten = asistentes.filter(a => a.asiste).length;
+                const noAsisten = asistentes.filter(a => !a.asiste).length;
+                let totalPersonas = 0;
+                asistentes.forEach(a => {
+                    if (a.asiste) totalPersonas += a.personas;
+                });
+
+                document.getElementById('adminTotal').textContent = total;
+                document.getElementById('adminAsisten').textContent = asisten;
+                document.getElementById('adminNoAsisten').textContent = noAsisten;
+                document.getElementById('adminPersonas').textContent = totalPersonas;
+                document.getElementById('adminDisponibles').textContent = Math.max(0, CUPO_MAXIMO - totalPersonas);
+
+                if (asistentes.length === 0) {
+                    adminTablaBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align:center; color:#888; padding:30px;">
+                                No hay invitados confirmados aún
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                asistentes.forEach((a, index) => {
+                    const estadoClass = a.asiste ? 'asiste' : 'no-asiste';
+                    const estadoText = a.asiste ? '✅ Sí asiste' : '❌ No asiste';
+                    const personasText = a.asiste ? a.personas : '-';
+                    html += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td><strong>${a.nombre || 'Anónimo'}</strong></td>
+                            <td><span class="estado-badge ${estadoClass}">${estadoText}</span></td>
+                            <td>${personasText}</td>
+                            <td style="max-width:150px; word-break:break-word; font-size:0.8rem; color:#555;">
+                                ${a.mensaje || '-'}
+                            </td>
+                            <td style="font-size:0.7rem; color:#888;">${a.fecha || '-'}</td>
+                        </tr>
+                    `;
+                });
+                adminTablaBody.innerHTML = html;
+            }
+
+            // -------- EXPORTAR A CSV --------
+            function exportarCSV() {
+                if (asistentes.length === 0) {
+                    alert('No hay datos para exportar.');
+                    return;
+                }
+
+                let csv = '#,Nombre,Asiste,Personas,Mensaje,Fecha\n';
+                asistentes.forEach((a, index) => {
+                    const asisteText = a.asiste ? 'Sí' : 'No';
+                    csv += `${index+1},"${a.nombre || 'Anónimo'}",${asisteText},${a.asiste ? a.personas : 0},"${a.mensaje || ''}","${a.fecha || ''}"\n`;
+                });
+
+                const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `invitados_XV_Amayrani_${new Date().toLocaleDateString()}.csv`;
+                link.click();
+                URL.revokeObjectURL(link.href);
+            }
+
+            // -------- LIMPIAR DATOS --------
+            function limpiarDatos() {
+                if (confirm('⚠️ ¿Estás segura de que quieres eliminar TODOS los datos de invitados? Esta acción no se puede deshacer.')) {
+                    if (confirm('Última confirmación: ¿Eliminar todos los datos?')) {
+                        asistentes = [];
+                        actualizarAdmin();
+                        verificarCupoLleno();
+                        alert('✅ Los datos locales han sido eliminados. Recuerda limpiar también tu hoja de Google Sheets manualmente.');
+                    }
+                }
+            }
+
+            // -------- SELECCIÓN DE ASISTENCIA --------
+            opcionSi.addEventListener('click', function() {
+                opcionSi.classList.add('seleccionada-si');
+                opcionSi.classList.remove('seleccionada-no');
+                opcionNo.classList.remove('seleccionada-si', 'seleccionada-no');
+                document.querySelector('input[name="asistencia"][value="si"]').checked = true;
+                asiste = true;
+                campoPersonas.classList.add('mostrar');
+                mensajeConfirmacion.classList.remove('mostrar');
+            });
+
+            opcionNo.addEventListener('click', function() {
+                opcionNo.classList.add('seleccionada-no');
+                opcionNo.classList.remove('seleccionada-si');
+                opcionSi.classList.remove('seleccionada-si', 'seleccionada-no');
+                document.querySelector('input[name="asistencia"][value="no"]').checked = true;
+                asiste = false;
+                campoPersonas.classList.remove('mostrar');
+                mensajeConfirmacion.classList.remove('mostrar');
+            });
+
+            // -------- CONFIRMAR ASISTENCIA --------
+            btnConfirmar.addEventListener('click', async function() {
+                const nombre = nombreInvitado.value.trim() || 'Anónimo';
+                const mensaje = mensajePersonal.value.trim();
+
+                if (asiste === null) {
+                    alert('Por favor, selecciona si asistirás o no.');
+                    return;
+                }
+
+                // Verificar cupo
+                let totalActual = 0;
+                asistentes.forEach(a => {
+                    if (a.asiste) totalActual += a.personas;
+                });
+
+                let personas = 0;
+                if (asiste === true) {
+                    personas = parseInt(numPersonas.value) || 1;
+                    if (totalActual + personas > CUPO_MAXIMO) {
+                        alert(`⚠️ Lo sentimos, el cupo máximo es de ${CUPO_MAXIMO} personas. Actualmente hay ${totalActual} confirmados.`);
+                        verificarCupoLleno();
+                        return;
+                    }
+                }
+
+                // Guardar en Google Sheets vía Apps Script
+                const exito = await escribirDatos(nombre, asiste, personas, mensaje);
+                
+                if (exito) {
+                    // Recargar datos
+                    await leerDatos();
+                    
+                    if (asiste === true) {
+                        textoConfirmacion.textContent = `🎉 ¡Gracias ${nombre}! Serán ${personas} persona(s). Te esperamos con mucha alegría 💖`;
+                        if (mensaje) {
+                            textoConfirmacion.textContent += `\n📝 "${mensaje}"`;
+                        }
+                    } else {
+                        textoConfirmacion.textContent = `😔 Lamentamos que no puedas venir ${nombre}. ¡Te extrañaremos! 💖`;
+                        if (mensaje) {
+                            textoConfirmacion.textContent += `\n📝 "${mensaje}"`;
+                        }
+                    }
+                    
+                    mensajeConfirmacion.classList.add('mostrar');
+
+                    btnConfirmar.disabled = true;
+                    btnConfirmar.textContent = '✅ ¡Confirmado!';
+                    setTimeout(() => {
+                        btnConfirmar.disabled = false;
+                        btnConfirmar.textContent = '🏹 Confirmar asistencia';
+                        verificarCupoLleno();
+                    }, 3000);
+
+                    // Limpiar selección
+                    setTimeout(() => {
+                        opcionSi.classList.remove('seleccionada-si');
+                        opcionNo.classList.remove('seleccionada-no');
+                        asiste = null;
+                        campoPersonas.classList.remove('mostrar');
+                        nombreInvitado.value = '';
+                        mensajePersonal.value = '';
+                    }, 1000);
+                }
+            });
+
+            // -------- ADMIN: CONTRASEÑA --------
+            btnAdminOculto.addEventListener('click', function() {
+                passwordModal.classList.add('mostrar');
+                inputPassword.value = '';
+                errorPassword.style.display = 'none';
+                inputPassword.focus();
+            });
+
+            function verificarPassword() {
+                if (inputPassword.value === CONTRASENA_ADMIN) {
+                    passwordModal.classList.remove('mostrar');
+                    adminPanel.classList.add('mostrar');
+                    cargandoAdmin.classList.add('mostrar');
+                    contenidoAdmin.style.display = 'none';
+                    
+                    leerDatos().then(() => {
+                        cargandoAdmin.classList.remove('mostrar');
+                        contenidoAdmin.style.display = 'block';
+                        actualizarAdmin();
+                    });
+                    
+                    inputPassword.value = '';
+                    errorPassword.style.display = 'none';
+                } else {
+                    errorPassword.style.display = 'block';
+                    inputPassword.value = '';
+                    inputPassword.focus();
+                }
+            }
+
+            btnAccederAdmin.addEventListener('click', verificarPassword);
+            inputPassword.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') verificarPassword();
+            });
+
+            function cerrarAdminPanel() {
+                adminPanel.classList.remove('mostrar');
+                passwordModal.classList.remove('mostrar');
+            }
+
+            cerrarAdmin.addEventListener('click', cerrarAdminPanel);
+            btnCerrarAdmin.addEventListener('click', cerrarAdminPanel);
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') cerrarAdminPanel();
+            });
+
+            // -------- ADMIN: BOTONES --------
+            btnExportarExcel.addEventListener('click', exportarCSV);
+            btnLimpiarDatos.addEventListener('click', limpiarDatos);
+
+            // -------- ABRIR INVITACIÓN --------
+            btnAbrir.addEventListener('click', function() {
+                pantallaInicio.style.display = 'none';
+                invitacionCompleta.style.display = 'block';
+                
+                leerDatos();
+                
+                audio.play().catch(e => console.log('Audio autoplay bloqueado'));
+                musicaActiva = true;
+                btnMusica.textContent = '🔊';
+            });
+
+            // -------- MÚSICA --------
+            btnMusica.addEventListener('click', function() {
+                if (musicaActiva) {
+                    audio.pause();
+                    musicaActiva = false;
+                    btnMusica.textContent = '🔇';
+                } else {
+                    audio.play().catch(e => console.log('Error al reproducir audio'));
+                    musicaActiva = true;
+                    btnMusica.textContent = '🔊';
+                }
+            });
+
+            // -------- CONTADOR REGRESIVO (FECHA CORREGIDA) --------
+            function iniciarContador() {
+                // 📅 19 de septiembre de 2026 - 7:00 PM (CDMX, GMT-6)
+                const fechaFiesta = new Date('2026-09-19T19:00:00-06:00').getTime();
+
+                function actualizar() {
+                    const ahora = new Date().getTime();
+                    const diferencia = fechaFiesta - ahora;
+
+                    if (diferencia <= 0) {
+                        document.getElementById('dias').textContent = '00';
+                        document.getElementById('horas').textContent = '00';
+                        document.getElementById('minutos').textContent = '00';
+                        document.getElementById('segundos').textContent = '00';
+                        return;
+                    }
+
+                    const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+                    const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+                    const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+
+                    document.getElementById('dias').textContent = String(dias).padStart(2, '0');
+                    document.getElementById('horas').textContent = String(horas).padStart(2, '0');
+                    document.getElementById('minutos').textContent = String(minutos).padStart(2, '0');
+                    document.getElementById('segundos').textContent = String(segundos).padStart(2, '0');
+                }
+
+                actualizar();
+                setInterval(actualizar, 1000);
+            }
+
+            // -------- INICIALIZAR --------
+            iniciarContador();
+
+            const sobreAnimado = document.getElementById('sobreAnimado');
+            if (sobreAnimado) {
+                sobreAnimado.addEventListener('click', function() {
+                    this.classList.toggle('abierto');
+                });
+            }
+
+        });
+    </script>
+
 </body>
 </html>
